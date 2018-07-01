@@ -1,6 +1,12 @@
 /**
  * Created by ganeshkb on 7/1/18.
  */
+
+//recursive solution for Fibonacci
+
+//Big O complexity - O(1)
+
+
 public class Fibonacci {
 
    static int fib(int n) {
