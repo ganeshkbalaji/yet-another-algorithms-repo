@@ -1,14 +1,15 @@
 /**
  * Created by ganeshkb on 7/1/18.
  */
-public class LinkedList {
 
-    Node head;
 
+
+public class LinkedListImplementation {
+    // Linked List node
     class Node {
         int data;
         Node next;
 
-        Node(int d){ data = d; };
+        Node(int d) {data = d;}
     }
 }
