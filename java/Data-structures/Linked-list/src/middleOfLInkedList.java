@@ -1,22 +1,8 @@
 import java.util.LinkedList;
 
-/**
- * Created by ganeshkb on 7/6/18.
- */
-public class middleOfLInkedList {
-
+public class middleOfLInkedList extends LinkedListImplementation {
 
     Node head;
-
-
-    class Node {
-        int data;
-        Node next;
-        Node(int d) {
-            data = d;
-            next = null;
-        }
-    }
 
     void printMiddle() {
         Node slow_pointer = head;
@@ -53,7 +39,7 @@ public class middleOfLInkedList {
     }
 
     public static void main(String [] args) {
-        LinkedList llist = new LinkedList();
+        LinkedList llist = new middleOfLInkedList();
         for (int i=5; i>0; --i)
         {
             llist.push(i);
