@@ -10,6 +10,6 @@ public class LinkedListImplementation {
         int data;
         Node next;
 
-        Node(int d) {data = d;}
+        Node(int d) {data = d; next = null;}
     }
 }
