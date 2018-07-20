@@ -1,88 +1,152 @@
-require 'pry'
+#!/usr/bin/env ruby
 
-SIZE = 50
-class Ant
-  attr_accessor :position, :direction
+require 'drawille'
 
-  def initialize
-    @position = [SIZE / 2, SIZE / 2]
-    @direction = 0
-  end
+# Langton's Ant
+# Draws in terminal
 
-  def update_position new_coords
-    @position = [@position, new_coords].inject() do |ary, e|
-      e.each_with_index do |ech, idx|
-        ary[idx] += ech
-      end
-      ary
+class Direction
+    @dir = 0
+
+    def initialize(direction)
+        @dir = {up: 0, right: 1, down: 2, left: 3}[direction] || 0;
     end
-  end
 
-  DIRECTION = {
-    0=> [0, 1],
-    1=> [1, 0],
-    2=> [0, -1],
-    3=> [-1, 0]
-  }
+    def transform_vector
+        case @dir
+        when 0
+            return {x: 0, y: 1}
+        when 1
+            return {x: 1, y: 0}
+        when 2
+            return {x: 0, y: -1}
+        when 3
+            return {x: -1, y: 0}
+        end
+    end
 
+    def turn_cw
+        @dir = (@dir + 1) % 4
+    end
+
+    def turn_ccw
+        @dir = (@dir + 3) % 4
+    end
 end
 
-# binding.pry
-
-@ant = Ant.new
-@board = []
-# ITERATIONS = 500
-
-def move
-  if is_part_of_board? @ant.position
-    @ant.direction = (@ant.direction - 1) % 4
-    @ant.update_position Ant::DIRECTION[@ant.direction]
-  else
-    @ant.direction = (@ant.direction + 1) % 4
-    @ant.update_position Ant::DIRECTION[@ant.direction]
-  end
-  @and
+module State
+    OFF = 0
+    ON = 1
 end
 
-def is_part_of_board? cell
-  @board.include? cell
+class Tile
+    @state = State::OFF
+    def initialize(state)
+        @state = state
+    end
+    def state
+        return @state
+    end
+    def flip
+        if @state == State::OFF
+            return @state = State::ON
+        else
+            return @state = State::OFF
+        end
+    end
+    def bool
+        return (@state == State::ON ? true : false)
+    end
 end
 
-def flip_state cell
-  if is_part_of_board? cell
-    @board.delete cell
-  else
-    @board << cell.dup
-  end
+class Screen
+    @screen = [];
+    @canvas = Drawille::Canvas.new
+    @x = 0
+    @y = 0
+
+    def initialize(x, y)
+        @screen = Array.new(y) { Array.new(x) { Tile.new State::OFF } }
+        @canvas = Drawille::Canvas.new
+        @x = x
+        @y = y
+    end
+
+    def inspect
+        string = "";
+        @screen.each do |i|
+            i.each do |j|
+                string << (j.bool ? '██' : '  ')
+            end
+            string << ?\n
+        end
+        return string
+    end
+
+    def screen
+        return @screen
+    end
+
+    def flip(x, y)
+        return @screen[y][x].flip
+    end
+
+    def print
+        @screen.each_with_index do |row, y|
+            row.each_with_index do |cell, x|
+                if cell.state == State::ON
+                    @canvas.set(x, y)
+                else
+                    @canvas.unset(x, y)
+                end
+            end
+        end
+        puts @canvas.frame
+    end
+
+    def x
+        @x
+    end
+
+    def y
+        @y
+    end
+end
+
+class Ant
+    @x = 0
+    @y = 0
+    @direction = :up
+    @screen = nil
+
+    def initialize(x, y, direction, screen)
+        @x, @y, @direction, @screen = x, y, direction, screen
+    end
+
+    def current_cell
+        @screen.screen[@y][@x]
+    end
+
+    def step
+        if current_cell.state == State::ON
+            @direction.turn_cw
+        else
+            @direction.turn_ccw
+        end
+        @screen.flip(@x, @y)
+        @x = (@x + @direction.transform_vector[:x]) % @screen.x
+        @y = (@y + @direction.transform_vector[:y]) % @screen.y
+    end
 end
 
 def main
-  # ITERATIONS.times do |step|
-  count = 0
-  while(true) do
-    p count += 1
-    move
-    draw
-    # binding.pry
-    flip_state @ant.position
-    # binding.pry
-    sleep(1.0/30.0)
-  end
-end
+    screen = Screen.new(160, 96);
+    ant = Ant.new(79, 47, Direction.new(:down), screen);
 
-def draw
-  board_to_draw = []
-  SIZE.times do |h|
-    SIZE.times do |w|
-      if is_part_of_board? [w, h]
-        board_to_draw << '█'
-      else
-        board_to_draw << ' '
-      end
+    loop do
+        screen.print
+        ant.step
     end
-    board_to_draw << '-'
-  end
-  board_to_draw.join.split('-').each {|i| p i.split(//).join(' ')}
 end
 
 main
