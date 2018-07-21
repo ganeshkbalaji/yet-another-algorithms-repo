@@ -61,13 +61,11 @@ end
 
 class Screen
     @screen = [];
-    @canvas = Drawille::Canvas.new
     @x = 0
     @y = 0
 
     def initialize(x, y)
         @screen = Array.new(y) { Array.new(x) { Tile.new State::OFF } }
-        @canvas = Drawille::Canvas.new
         @x = x
         @y = y
     end
@@ -140,7 +138,7 @@ class Ant
 end
 
 def main
-    screen = Screen.new(160, 96);
+    screen = Screen.new(3, 4);
     ant = Ant.new(79, 47, Direction.new(:down), screen);
 
     loop do
