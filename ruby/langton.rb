@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'drawille'
+require "pp"
 
 # Langton's Ant
 # Draws in terminal
@@ -93,13 +94,13 @@ class Screen
         @screen.each_with_index do |row, y|
             row.each_with_index do |cell, x|
                 if cell.state == State::ON
-                    @canvas.set(x, y)
+                    puts @screen
                 else
-                    @canvas.unset(x, y)
+                    puts @screen
                 end
             end
         end
-        puts @canvas.frame
+        puts @screen
     end
 
     def x
@@ -139,11 +140,11 @@ end
 
 def main
     screen = Screen.new(3, 4);
-    ant = Ant.new(79, 47, Direction.new(:down), screen);
+    ant = Ant.new(0, 0, Direction.new(:down), screen);
 
-    loop do
-        screen.print
-        ant.step
+    7.times do
+      screen.print
+      ant.step
     end
 end
 
