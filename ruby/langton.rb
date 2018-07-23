@@ -42,8 +42,9 @@ end
 
 class Tile
     @state = State::OFF
-    def initialize(state)
+    def initialize(state, character)
         @state = state
+        @character = character
     end
     def state
         return @state
@@ -66,7 +67,7 @@ class Screen
     @y = 0
 
     def initialize(x, y)
-        @screen = Array.new(y) { Array.new(x) { Tile.new State::OFF } }
+        @screen = Array.new(y) { Array.new(x) { Tile.new State::OFF,"." } }
         @x = x
         @y = y
     end
@@ -94,13 +95,12 @@ class Screen
         @screen.each_with_index do |row, y|
             row.each_with_index do |cell, x|
                 if cell.state == State::ON
-                    puts @screen
+                    puts PP.pp(@screen)
                 else
-                    puts @screen
+                    puts PP.pp(@screen)
                 end
             end
         end
-        puts @screen
     end
 
     def x
