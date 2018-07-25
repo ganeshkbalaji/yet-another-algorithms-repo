@@ -140,7 +140,7 @@ end
 
 def main
     screen = Screen.new(3, 4);
-    ant = Ant.new(0, 1, Direction.new(:down), screen);
+    ant = Ant.new(0, 0, Direction.new(:down), screen);
 
     7.times do
       screen.print
