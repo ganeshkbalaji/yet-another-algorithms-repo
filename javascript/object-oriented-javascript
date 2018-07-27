@@ -1,0 +1,14 @@
+function Human (firstName, lastName, age) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+  this.age = age;
+
+  this.sayName = function() {
+    console.log('I am ' + this.firstName)
+  }
+}
+
+
+const ganesh = new Human('Ganesh', 'B', 2);
+
+console.log(ganesh);
